@@ -12,13 +12,28 @@ This is a NestJS based Modular Monolith application for managing employee expens
 
 ## Setup
 
-1. Setup PostgreSQL database based on credentials in `.env`
+1. Setup PostgreSQL database and configure environment:
+   ```bash
+   cp .env.example .env
+   # Update DB_USERNAME, DB_PASSWORD, DB_DATABASE in .env
+   ```
 2. Install dependencies:
    ```bash
    npm install
    ```
-3. Run migrations / seeds (see `src/database/seeds`)
-4. Start development server:
+3. Run migrations to build the schema:
+   ```bash
+   npm run migration:run
+   ```
+4. Seed default data (departments, users, categories, rates):
+   ```bash
+   npm run seed
+   ```
+   *Default users (Password: `secret123`):*
+   * `admin@payoneer.com`
+   * `manager@payoneer.com`
+   * `employee@payoneer.com`
+5. Start development server:
    ```bash
    npm run start:dev
    ```
