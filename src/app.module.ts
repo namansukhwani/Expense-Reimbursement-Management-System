@@ -15,6 +15,7 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { ExpenseModule } from './modules/expense/expense.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { ClaimModule } from './modules/claim/claim.module';
+import { BudgetModule } from './modules/budget/budget.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ClaimModule } from './modules/claim/claim.module';
     ExpenseModule,
     AuditModule,
     ClaimModule,
+    BudgetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

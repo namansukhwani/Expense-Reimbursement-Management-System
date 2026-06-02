@@ -6,12 +6,12 @@ export class DepartmentEntity extends BaseEntity {
   @Column({ type: 'varchar', unique: true })
   name: string;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, name: 'allocated_budget' })
+  @Column({ type: 'decimal', precision: 12, scale: 2, name: 'allocated_budget', default: 0 })
   allocatedBudget: number;
 
   @Column({ type: 'decimal', precision: 12, scale: 2, name: 'consumed_budget', default: 0 })
   consumedBudget: number;
 
-  @Column({ type: 'varchar', length: 3, name: 'budget_currency' })
+  @Column({ type: 'varchar', length: 3, name: 'budget_currency', default: 'USD' })
   budgetCurrency: string;
 }

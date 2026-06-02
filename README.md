@@ -33,6 +33,6 @@ This is a NestJS based Modular Monolith application for managing employee expens
 - [x] **Claim:** Reimbursement claim state machine and bundling
 - [ ] **Approval:** Manager approval workflow and budget consumption
 - [x] **Audit:** Entity action tracking and claim status history
-- [ ] **Budget:** Internal budget service
+- [x] **Budget:** Internal budget service
 ## Documentation
 See `/documentation/architecture-plan.md` and `/documentation/implementation-plan.md` for full design and rollout strategy.
