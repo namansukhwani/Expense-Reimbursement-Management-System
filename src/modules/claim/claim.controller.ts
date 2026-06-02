@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Query,
+  UseGuards,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ClaimService } from './claim.service';
 import { CreateClaimDto } from './dto/create-claim.dto';
 import { UpdateClaimDto } from './dto/update-claim.dto';
@@ -15,22 +25,28 @@ export class ClaimController {
   constructor(private readonly claimService: ClaimService) {}
 
   @Post()
-  async create(@CurrentUser('sub') userId: string, @Body() createClaimDto: CreateClaimDto) {
+  async create(
+    @CurrentUser('sub') userId: string,
+    @Body() createClaimDto: CreateClaimDto,
+  ) {
     const data = await this.claimService.create(userId, createClaimDto);
     return { success: true, data };
   }
 
   @Get()
   async findAll(
-    @CurrentUser('sub') userId: string, 
-    @Query() query: PaginationQueryDto & { status?: ClaimStatus }
+    @CurrentUser('sub') userId: string,
+    @Query() query: PaginationQueryDto & { status?: ClaimStatus },
   ) {
     const result = await this.claimService.findAllByUser(userId, query);
     return { success: true, ...result };
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string, @CurrentUser('sub') userId: string) {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
+  ) {
     const data = await this.claimService.findById(id, userId);
     return { success: true, data };
   }
@@ -46,13 +62,19 @@ export class ClaimController {
   }
 
   @Post(':id/submit')
-  async submit(@Param('id', ParseUUIDPipe) id: string, @CurrentUser('sub') userId: string) {
+  async submit(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
+  ) {
     const data = await this.claimService.submit(id, userId);
     return { success: true, data };
   }
 
   @Post(':id/withdraw')
-  async withdraw(@Param('id', ParseUUIDPipe) id: string, @CurrentUser('sub') userId: string) {
+  async withdraw(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
+  ) {
     const data = await this.claimService.withdraw(id, userId);
     return { success: true, data };
   }

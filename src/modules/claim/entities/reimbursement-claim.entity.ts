@@ -1,4 +1,11 @@
-import { Entity, Column, Index, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  Index,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { DepartmentEntity } from '../../department/entities/department.entity';
@@ -22,10 +29,22 @@ export class ReimbursementClaimEntity extends BaseEntity {
   @Column({ type: 'varchar', enum: ClaimStatus, default: ClaimStatus.DRAFT })
   status: ClaimStatus;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, name: 'total_amount', default: 0 })
+  @Column({
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    name: 'total_amount',
+    default: 0,
+  })
   totalAmount: number;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, name: 'approved_amount', nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    name: 'approved_amount',
+    nullable: true,
+  })
   approvedAmount: number;
 
   @Column({ type: 'text', name: 'employee_notes', nullable: true })
@@ -45,12 +64,12 @@ export class ReimbursementClaimEntity extends BaseEntity {
   @JoinColumn({ name: 'department_id' })
   department: DepartmentEntity;
 
-  @OneToMany(() => ExpenseEntity, expense => expense.claim)
+  @OneToMany(() => ExpenseEntity, (expense) => expense.claim)
   expenses: ExpenseEntity[];
 
-  @OneToMany(() => ClaimStatusHistoryEntity, history => history.claim)
+  @OneToMany(() => ClaimStatusHistoryEntity, (history) => history.claim)
   statusHistory: ClaimStatusHistoryEntity[];
 
-  @OneToMany(() => ApprovalActionEntity, action => action.claim)
+  @OneToMany(() => ApprovalActionEntity, (action) => action.claim)
   approvalActions: ApprovalActionEntity[];
 }

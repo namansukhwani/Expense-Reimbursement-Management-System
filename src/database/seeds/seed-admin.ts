@@ -6,7 +6,7 @@ import databaseConfig from '../../config/database.config';
 
 async function seedAdmin() {
   const config = databaseConfig();
-  
+
   const dataSource = new DataSource({
     type: 'postgres',
     host: config.host,
@@ -21,10 +21,12 @@ async function seedAdmin() {
   console.log('Database connected');
 
   const userRepository = dataSource.getRepository(UserEntity);
-  
+
   const adminEmail = 'admin@company.com';
-  const existingAdmin = await userRepository.findOne({ where: { email: adminEmail } });
-  
+  const existingAdmin = await userRepository.findOne({
+    where: { email: adminEmail },
+  });
+
   if (existingAdmin) {
     console.log('Admin user already exists.');
   } else {
@@ -37,11 +39,11 @@ async function seedAdmin() {
       role: UserRole.ADMIN,
       isActive: true,
     });
-    
+
     await userRepository.save(admin);
     console.log('Admin user created successfully.');
   }
-  
+
   await dataSource.destroy();
 }
 

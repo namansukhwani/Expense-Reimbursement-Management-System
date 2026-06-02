@@ -11,7 +11,9 @@ export class SettingsService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const baseCurrency = await this.settingRepo.findOne({ where: { settingKey: 'BASE_CURRENCY' } });
+    const baseCurrency = await this.settingRepo.findOne({
+      where: { settingKey: 'BASE_CURRENCY' },
+    });
     if (!baseCurrency) {
       const setting = this.settingRepo.create({
         settingKey: 'BASE_CURRENCY',
@@ -23,16 +25,23 @@ export class SettingsService implements OnModuleInit {
   }
 
   async get(key: string): Promise<string | null> {
-    const setting = await this.settingRepo.findOne({ where: { settingKey: key } });
+    const setting = await this.settingRepo.findOne({
+      where: { settingKey: key },
+    });
     return setting ? setting.settingValue : null;
   }
 
   async set(key: string, value: string): Promise<SystemSettingEntity> {
-    let setting = await this.settingRepo.findOne({ where: { settingKey: key } });
+    let setting = await this.settingRepo.findOne({
+      where: { settingKey: key },
+    });
     if (setting) {
       setting.settingValue = value;
     } else {
-      setting = this.settingRepo.create({ settingKey: key, settingValue: value });
+      setting = this.settingRepo.create({
+        settingKey: key,
+        settingValue: value,
+      });
     }
     return this.settingRepo.save(setting);
   }

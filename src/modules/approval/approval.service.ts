@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { ApprovalActionEntity } from './entities/approval-action.entity';
@@ -24,7 +29,10 @@ export class ApprovalService {
     private readonly dataSource: DataSource,
   ) {}
 
-  private async validateAndLoadClaim(claimId: string, managerId: string): Promise<ReimbursementClaimEntity> {
+  private async validateAndLoadClaim(
+    claimId: string,
+    managerId: string,
+  ): Promise<ReimbursementClaimEntity> {
     const claim = await this.claimRepo.findOne({
       where: { id: claimId },
       relations: { employee: true },
@@ -35,19 +43,27 @@ export class ApprovalService {
     }
 
     if (claim.status !== ClaimStatus.SUBMITTED) {
-      throw new BadRequestException(`Claim must be in SUBMITTED state. Current state: ${claim.status}`);
+      throw new BadRequestException(
+        `Claim must be in SUBMITTED state. Current state: ${claim.status}`,
+      );
     }
 
     if (claim.employee.reportingManagerId !== managerId) {
-      throw new ForbiddenException('You are not authorized to approve this claim');
+      throw new ForbiddenException(
+        'You are not authorized to approve this claim',
+      );
     }
 
     return claim;
   }
 
-  async approve(claimId: string, managerId: string, dto: ApproveClaimDto): Promise<ReimbursementClaimEntity> {
+  async approve(
+    claimId: string,
+    managerId: string,
+    dto: ApproveClaimDto,
+  ): Promise<ReimbursementClaimEntity> {
     const claim = await this.validateAndLoadClaim(claimId, managerId);
-    
+
     // We will use a transaction to save the action, update claim, and update budget
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -75,7 +91,7 @@ export class ApprovalService {
         ClaimStatus.SUBMITTED,
         ClaimStatus.APPROVED,
         managerId,
-        dto.comment
+        dto.comment,
       );
 
       // 4. Log Action
@@ -86,13 +102,16 @@ export class ApprovalService {
         managerId,
         undefined,
         { approvedAmount: claim.approvedAmount },
-        'system'
+        'system',
       );
 
       // 5. Consume Budget (using the injected service directly outside transaction because it uses query builder natively)
       // Since consumeBudget throws if insufficient, if it fails, we rollback.
       if (claim.departmentId) {
-        await this.budgetService.consumeBudget(claim.departmentId, Number(claim.approvedAmount));
+        await this.budgetService.consumeBudget(
+          claim.departmentId,
+          Number(claim.approvedAmount),
+        );
       }
 
       await queryRunner.commitTransaction();
@@ -105,11 +124,17 @@ export class ApprovalService {
     }
   }
 
-  async partialApprove(claimId: string, managerId: string, dto: PartialApproveClaimDto): Promise<ReimbursementClaimEntity> {
+  async partialApprove(
+    claimId: string,
+    managerId: string,
+    dto: PartialApproveClaimDto,
+  ): Promise<ReimbursementClaimEntity> {
     const claim = await this.validateAndLoadClaim(claimId, managerId);
-    
+
     if (Number(dto.approvedAmount) >= Number(claim.totalAmount)) {
-      throw new BadRequestException('Partial approval amount must be less than total amount');
+      throw new BadRequestException(
+        'Partial approval amount must be less than total amount',
+      );
     }
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -135,7 +160,7 @@ export class ApprovalService {
         ClaimStatus.SUBMITTED,
         ClaimStatus.PARTIALLY_APPROVED,
         managerId,
-        dto.comment
+        dto.comment,
       );
 
       await this.auditService.logAction(
@@ -145,11 +170,14 @@ export class ApprovalService {
         managerId,
         undefined,
         { approvedAmount: claim.approvedAmount },
-        'system'
+        'system',
       );
 
       if (claim.departmentId) {
-        await this.budgetService.consumeBudget(claim.departmentId, Number(claim.approvedAmount));
+        await this.budgetService.consumeBudget(
+          claim.departmentId,
+          Number(claim.approvedAmount),
+        );
       }
 
       await queryRunner.commitTransaction();
@@ -162,7 +190,11 @@ export class ApprovalService {
     }
   }
 
-  async reject(claimId: string, managerId: string, dto: RejectClaimDto): Promise<ReimbursementClaimEntity> {
+  async reject(
+    claimId: string,
+    managerId: string,
+    dto: RejectClaimDto,
+  ): Promise<ReimbursementClaimEntity> {
     const claim = await this.validateAndLoadClaim(claimId, managerId);
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -188,7 +220,7 @@ export class ApprovalService {
         ClaimStatus.SUBMITTED,
         ClaimStatus.REJECTED,
         managerId,
-        dto.comment
+        dto.comment,
       );
 
       await this.auditService.logAction(
@@ -198,7 +230,7 @@ export class ApprovalService {
         managerId,
         undefined,
         { approvedAmount: 0 },
-        'system'
+        'system',
       );
 
       // No budget consumption for rejected claim
@@ -213,7 +245,10 @@ export class ApprovalService {
     }
   }
 
-  async findPendingForManager(managerId: string, query: PaginationQueryDto): Promise<PaginatedResult<ReimbursementClaimEntity>> {
+  async findPendingForManager(
+    managerId: string,
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<ReimbursementClaimEntity>> {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
@@ -235,7 +270,10 @@ export class ApprovalService {
     };
   }
 
-  async findApprovalHistory(managerId: string, query: PaginationQueryDto): Promise<PaginatedResult<ApprovalActionEntity>> {
+  async findApprovalHistory(
+    managerId: string,
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<ApprovalActionEntity>> {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;

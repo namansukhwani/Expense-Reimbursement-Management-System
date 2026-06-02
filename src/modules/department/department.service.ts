@@ -19,7 +19,9 @@ export class DepartmentService {
     return this.departmentRepo.save(department);
   }
 
-  async findAll(query: PaginationQueryDto): Promise<PaginatedResult<DepartmentEntity>> {
+  async findAll(
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<DepartmentEntity>> {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
@@ -51,7 +53,10 @@ export class DepartmentService {
     return department;
   }
 
-  async update(id: string, dto: UpdateDepartmentDto): Promise<DepartmentEntity> {
+  async update(
+    id: string,
+    dto: UpdateDepartmentDto,
+  ): Promise<DepartmentEntity> {
     const department = await this.findOne(id);
     this.departmentRepo.merge(department, dto);
     return this.departmentRepo.save(department);

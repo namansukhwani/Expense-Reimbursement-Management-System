@@ -1,4 +1,10 @@
-import { IsString, IsNumber, IsPositive, Length, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsPositive,
+  Length,
+  IsDateString,
+} from 'class-validator';
 
 export class CreateExchangeRateDto {
   @IsString()

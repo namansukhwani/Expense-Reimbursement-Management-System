@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -27,7 +31,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.passwordHash,
+    );
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
@@ -41,7 +48,7 @@ export class AuthService {
       const payload = this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('jwt.secret'),
       });
-      
+
       const user = await this.userRepository.findOne({
         where: { id: payload.sub, isActive: true },
       });
@@ -51,7 +58,7 @@ export class AuthService {
       }
 
       return this.generateTokens(user);
-    } catch (e) {
+    } catch (_e) {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
@@ -76,11 +83,13 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: (this.configService.get<string>('jwt.accessExpiry') || '15m') as any,
+      expiresIn: (this.configService.get<string>('jwt.accessExpiry') ||
+        '15m') as any,
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: (this.configService.get<string>('jwt.refreshExpiry') || '7d') as any,
+      expiresIn: (this.configService.get<string>('jwt.refreshExpiry') ||
+        '7d') as any,
     });
 
     return {

@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, BadRequestException, Inject, forwardRef } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { ReimbursementClaimEntity } from './entities/reimbursement-claim.entity';
@@ -29,28 +35,34 @@ export class ClaimService {
     return `CLM-${year}-${seq}`;
   }
 
-  async create(userId: string, dto: CreateClaimDto): Promise<ReimbursementClaimEntity> {
+  async create(
+    userId: string,
+    dto: CreateClaimDto,
+  ): Promise<ReimbursementClaimEntity> {
     if (dto.expenseIds.length === 0) {
       throw new BadRequestException('A claim must have at least one expense');
     }
 
-    const unattachedExpenses = await this.expenseService.findUnattachedReimbursable(userId);
-    const unattachedIds = unattachedExpenses.map(e => e.id);
-    
+    const unattachedExpenses =
+      await this.expenseService.findUnattachedReimbursable(userId);
+    const unattachedIds = unattachedExpenses.map((e) => e.id);
+
     let totalAmount = 0;
     const expensesToAttach = [];
 
     for (const expenseId of dto.expenseIds) {
       if (!unattachedIds.includes(expenseId)) {
-        throw new BadRequestException(`Expense ${expenseId} is not available to be attached`);
+        throw new BadRequestException(
+          `Expense ${expenseId} is not available to be attached`,
+        );
       }
-      const exp = unattachedExpenses.find(e => e.id === expenseId)!;
+      const exp = unattachedExpenses.find((e) => e.id === expenseId)!;
       totalAmount += Number(exp.convertedAmount);
       expensesToAttach.push(exp);
     }
 
     const claimNumber = await this.generateClaimNumber();
-    
+
     // First save the claim
     let claim = this.claimRepo.create({
       claimNumber,
@@ -59,23 +71,29 @@ export class ClaimService {
       status: ClaimStatus.DRAFT,
       totalAmount,
     });
-    
+
     claim = await this.claimRepo.save(claim);
 
     // Attach expenses
     for (const exp of expensesToAttach) {
-      await this.expenseService.update(exp.id, userId, { ...exp, claimId: claim.id } as any);
+      await this.expenseService.update(exp.id, userId, {
+        ...exp,
+        claimId: claim.id,
+      } as any);
     }
 
     return claim;
   }
 
-  async findById(claimId: string, userId?: string): Promise<ReimbursementClaimEntity> {
+  async findById(
+    claimId: string,
+    userId?: string,
+  ): Promise<ReimbursementClaimEntity> {
     const where: any = { id: claimId };
     if (userId) {
       where.userId = userId;
     }
-    
+
     const claim = await this.claimRepo.findOne({
       where,
       relations: {
@@ -93,7 +111,11 @@ export class ClaimService {
     return claim;
   }
 
-  async update(claimId: string, userId: string, dto: UpdateClaimDto): Promise<ReimbursementClaimEntity> {
+  async update(
+    claimId: string,
+    userId: string,
+    dto: UpdateClaimDto,
+  ): Promise<ReimbursementClaimEntity> {
     const claim = await this.findById(claimId, userId);
     if (claim.status !== ClaimStatus.DRAFT) {
       throw new BadRequestException('Only DRAFT claims can be updated');
@@ -103,24 +125,33 @@ export class ClaimService {
 
     if (dto.removeExpenseIds && dto.removeExpenseIds.length > 0) {
       for (const expenseId of dto.removeExpenseIds) {
-        const exp = claim.expenses.find(e => e.id === expenseId);
+        const exp = claim.expenses.find((e) => e.id === expenseId);
         if (exp) {
-          await this.expenseService.update(exp.id, userId, { ...exp, claimId: null } as any);
+          await this.expenseService.update(exp.id, userId, {
+            ...exp,
+            claimId: null,
+          } as any);
           changed = true;
         }
       }
     }
 
     if (dto.addExpenseIds && dto.addExpenseIds.length > 0) {
-      const unattachedExpenses = await this.expenseService.findUnattachedReimbursable(userId);
-      const unattachedIds = unattachedExpenses.map(e => e.id);
-      
+      const unattachedExpenses =
+        await this.expenseService.findUnattachedReimbursable(userId);
+      const unattachedIds = unattachedExpenses.map((e) => e.id);
+
       for (const expenseId of dto.addExpenseIds) {
         if (!unattachedIds.includes(expenseId)) {
-          throw new BadRequestException(`Expense ${expenseId} is not available to be attached`);
+          throw new BadRequestException(
+            `Expense ${expenseId} is not available to be attached`,
+          );
         }
-        const exp = unattachedExpenses.find(e => e.id === expenseId)!;
-        await this.expenseService.update(exp.id, userId, { ...exp, claimId: claim.id } as any);
+        const exp = unattachedExpenses.find((e) => e.id === expenseId)!;
+        await this.expenseService.update(exp.id, userId, {
+          ...exp,
+          claimId: claim.id,
+        } as any);
         changed = true;
       }
     }
@@ -144,11 +175,14 @@ export class ClaimService {
     return claim;
   }
 
-  async submit(claimId: string, userId: string): Promise<ReimbursementClaimEntity> {
+  async submit(
+    claimId: string,
+    userId: string,
+  ): Promise<ReimbursementClaimEntity> {
     const claim = await this.findById(claimId, userId);
-    
+
     this.stateMachine.validateTransition(claim.status, ClaimStatus.SUBMITTED);
-    
+
     if (claim.expenses.length === 0) {
       throw new BadRequestException('Cannot submit a claim with 0 expenses');
     }
@@ -164,15 +198,18 @@ export class ClaimService {
       previousStatus,
       ClaimStatus.SUBMITTED,
       userId,
-      'Claim submitted by employee'
+      'Claim submitted by employee',
     );
 
     return saved;
   }
 
-  async withdraw(claimId: string, userId: string): Promise<ReimbursementClaimEntity> {
+  async withdraw(
+    claimId: string,
+    userId: string,
+  ): Promise<ReimbursementClaimEntity> {
     const claim = await this.findById(claimId, userId);
-    
+
     this.stateMachine.validateTransition(claim.status, ClaimStatus.WITHDRAWN);
 
     const previousStatus = claim.status;
@@ -180,7 +217,10 @@ export class ClaimService {
 
     // Detach expenses
     for (const exp of claim.expenses) {
-       await this.expenseService.update(exp.id, userId, { ...exp, claimId: null } as any);
+      await this.expenseService.update(exp.id, userId, {
+        ...exp,
+        claimId: null,
+      } as any);
     }
 
     const saved = await this.claimRepo.save(claim);
@@ -190,13 +230,16 @@ export class ClaimService {
       previousStatus,
       ClaimStatus.WITHDRAWN,
       userId,
-      'Claim withdrawn by employee'
+      'Claim withdrawn by employee',
     );
 
     return saved;
   }
 
-  async findAllByUser(userId: string, query: PaginationQueryDto & { status?: ClaimStatus }): Promise<PaginatedResult<ReimbursementClaimEntity>> {
+  async findAllByUser(
+    userId: string,
+    query: PaginationQueryDto & { status?: ClaimStatus },
+  ): Promise<PaginatedResult<ReimbursementClaimEntity>> {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
@@ -219,7 +262,10 @@ export class ClaimService {
     };
   }
 
-  async findPendingForManager(managerId: string, query: PaginationQueryDto): Promise<PaginatedResult<ReimbursementClaimEntity>> {
+  async findPendingForManager(
+    managerId: string,
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<ReimbursementClaimEntity>> {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;

@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { AuditService } from './audit.service';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -9,7 +16,14 @@ export class AuditController {
   constructor(private readonly auditService: AuditService) {}
 
   @Get()
-  async findAll(@Query() query: PaginationQueryDto & { entityType?: string; entityId?: string; actorId?: string }) {
+  async findAll(
+    @Query()
+    query: PaginationQueryDto & {
+      entityType?: string;
+      entityId?: string;
+      actorId?: string;
+    },
+  ) {
     const result = await this.auditService.findAuditLogs(query);
     return { success: true, ...result };
   }

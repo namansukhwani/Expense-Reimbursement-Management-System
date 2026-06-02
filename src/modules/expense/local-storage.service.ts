@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs/promises';
 import * as path from 'path';
@@ -9,7 +13,8 @@ export class LocalStorageService {
   private readonly storagePath: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.storagePath = this.configService.get<string>('storage.localPath') || './uploads';
+    this.storagePath =
+      this.configService.get<string>('storage.localPath') || './uploads';
   }
 
   async upload(file: Express.Multer.File, userId: string): Promise<string> {
@@ -21,9 +26,9 @@ export class LocalStorageService {
       const filePath = path.join(userDirPath, fileName);
 
       await fs.writeFile(filePath, file.buffer);
-      
+
       return path.join(userId, fileName);
-    } catch (e) {
+    } catch (_e) {
       throw new InternalServerErrorException('Failed to upload receipt');
     }
   }
@@ -32,7 +37,7 @@ export class LocalStorageService {
     try {
       const fullPath = path.join(this.storagePath, subPath);
       return await fs.readFile(fullPath);
-    } catch (e) {
+    } catch (_e) {
       throw new NotFoundException('Receipt file not found');
     }
   }
@@ -41,7 +46,7 @@ export class LocalStorageService {
     try {
       const fullPath = path.join(this.storagePath, subPath);
       await fs.unlink(fullPath);
-    } catch (e) {
+    } catch (_e) {
       // Ignore if file doesn't exist
     }
   }

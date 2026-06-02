@@ -54,11 +54,17 @@ export class AuditService {
     return this.claimHistoryRepo.save(history);
   }
 
-  async findAuditLogs(query: PaginationQueryDto & { entityType?: string; entityId?: string; actorId?: string }): Promise<PaginatedResult<AuditLogEntity>> {
+  async findAuditLogs(
+    query: PaginationQueryDto & {
+      entityType?: string;
+      entityId?: string;
+      actorId?: string;
+    },
+  ): Promise<PaginatedResult<AuditLogEntity>> {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
-    
+
     const where: any = {};
     if (query.entityType) where.entityType = query.entityType;
     if (query.entityId) where.entityId = query.entityId;

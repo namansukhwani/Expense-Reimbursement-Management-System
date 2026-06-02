@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ApprovalService } from './approval.service';
 import { ApproveClaimDto } from './dto/approve-claim.dto';
 import { PartialApproveClaimDto } from './dto/partial-approve-claim.dto';
@@ -13,14 +22,26 @@ export class ApprovalController {
   constructor(private readonly approvalService: ApprovalService) {}
 
   @Get('pending')
-  async findPending(@CurrentUser('sub') userId: string, @Query() query: PaginationQueryDto) {
-    const result = await this.approvalService.findPendingForManager(userId, query);
+  async findPending(
+    @CurrentUser('sub') userId: string,
+    @Query() query: PaginationQueryDto,
+  ) {
+    const result = await this.approvalService.findPendingForManager(
+      userId,
+      query,
+    );
     return { success: true, ...result };
   }
 
   @Get('history')
-  async findHistory(@CurrentUser('sub') userId: string, @Query() query: PaginationQueryDto) {
-    const result = await this.approvalService.findApprovalHistory(userId, query);
+  async findHistory(
+    @CurrentUser('sub') userId: string,
+    @Query() query: PaginationQueryDto,
+  ) {
+    const result = await this.approvalService.findApprovalHistory(
+      userId,
+      query,
+    );
     return { success: true, ...result };
   }
 

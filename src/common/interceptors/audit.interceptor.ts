@@ -22,12 +22,14 @@ export class AuditInterceptor implements NestInterceptor {
       context.getHandler(),
       context.getClass(),
     ]);
-    
+
     if (!entityType) {
       return next.handle();
     }
 
-    const req = context.switchToHttp().getRequest();
+    const req = context
+      .switchToHttp()
+      .getRequest<import('express').Request & { user?: any }>();
     const actorId = req.user?.sub;
     const ipAddress = req.ip;
     const method = req.method;
@@ -42,15 +44,17 @@ export class AuditInterceptor implements NestInterceptor {
         const data = response?.data;
         if (data && data.id) {
           // Fire and forget audit log creation
-          this.auditService.logAction(
-            entityType,
-            data.id,
-            action,
-            actorId,
-            undefined, // We could capture body as new values if needed
-            req.body,
-            ipAddress,
-          ).catch(e => console.error('Audit logging failed', e));
+          this.auditService
+            .logAction(
+              entityType,
+              data.id,
+              action,
+              actorId,
+              undefined, // We could capture body as new values if needed
+              req.body,
+              ipAddress,
+            )
+            .catch((e) => console.error('Audit logging failed', e));
         }
       }),
     );

@@ -1,6 +1,18 @@
-import { 
-  Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, 
-  ParseUUIDPipe, UseInterceptors, UploadedFile, StreamableFile, Res 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
+  StreamableFile,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Response } from 'express';
@@ -19,13 +31,19 @@ export class ExpenseController {
   constructor(private readonly expenseService: ExpenseService) {}
 
   @Post()
-  async create(@CurrentUser('sub') userId: string, @Body() createExpenseDto: CreateExpenseDto) {
+  async create(
+    @CurrentUser('sub') userId: string,
+    @Body() createExpenseDto: CreateExpenseDto,
+  ) {
     const data = await this.expenseService.create(userId, createExpenseDto);
     return { success: true, data };
   }
 
   @Get()
-  async findAll(@CurrentUser('sub') userId: string, @Query() query: PaginationQueryDto) {
+  async findAll(
+    @CurrentUser('sub') userId: string,
+    @Query() query: PaginationQueryDto,
+  ) {
     const result = await this.expenseService.findAllByUser(userId, query);
     return { success: true, ...result };
   }
@@ -37,7 +55,10 @@ export class ExpenseController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string, @CurrentUser('sub') userId: string) {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
+  ) {
     const data = await this.expenseService.findById(id, userId);
     return { success: true, data };
   }
@@ -53,7 +74,10 @@ export class ExpenseController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseUUIDPipe) id: string, @CurrentUser('sub') userId: string) {
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
+  ) {
     await this.expenseService.delete(id, userId);
     return { success: true, message: 'Expense deleted successfully' };
   }
@@ -84,7 +108,10 @@ export class ExpenseController {
   }
 
   @Delete(':id/receipt')
-  async deleteReceipt(@Param('id', ParseUUIDPipe) id: string, @CurrentUser('sub') userId: string) {
+  async deleteReceipt(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
+  ) {
     const data = await this.expenseService.deleteReceipt(id, userId);
     return { success: true, data };
   }

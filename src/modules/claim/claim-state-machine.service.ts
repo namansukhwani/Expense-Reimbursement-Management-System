@@ -6,10 +6,10 @@ export class ClaimStateMachineService {
   private readonly validTransitions: Record<ClaimStatus, ClaimStatus[]> = {
     [ClaimStatus.DRAFT]: [ClaimStatus.SUBMITTED],
     [ClaimStatus.SUBMITTED]: [
-      ClaimStatus.APPROVED, 
-      ClaimStatus.PARTIALLY_APPROVED, 
-      ClaimStatus.REJECTED, 
-      ClaimStatus.WITHDRAWN
+      ClaimStatus.APPROVED,
+      ClaimStatus.PARTIALLY_APPROVED,
+      ClaimStatus.REJECTED,
+      ClaimStatus.WITHDRAWN,
     ],
     [ClaimStatus.APPROVED]: [],
     [ClaimStatus.PARTIALLY_APPROVED]: [],
@@ -24,7 +24,9 @@ export class ClaimStateMachineService {
 
   validateTransition(from: ClaimStatus, to: ClaimStatus): void {
     if (!this.canTransition(from, to)) {
-      throw new BadRequestException(`Cannot transition claim from ${from} to ${to}`);
+      throw new BadRequestException(
+        `Cannot transition claim from ${from} to ${to}`,
+      );
     }
   }
 

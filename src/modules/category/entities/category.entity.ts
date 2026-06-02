@@ -9,10 +9,21 @@ export class CategoryEntity extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, name: 'reimbursement_limit', nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    name: 'reimbursement_limit',
+    nullable: true,
+  })
   reimbursementLimit: number;
 
-  @Column({ type: 'varchar', length: 3, name: 'limit_currency', nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 3,
+    name: 'limit_currency',
+    nullable: true,
+  })
   limitCurrency: string;
 
   @Column({ type: 'boolean', name: 'is_active', default: true })

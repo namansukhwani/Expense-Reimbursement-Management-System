@@ -7,7 +7,9 @@ import { ClaimStatusHistoryEntity } from './entities/claim-status-history.entity
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([AuditLogEntity, ClaimStatusHistoryEntity])],
+  imports: [
+    TypeOrmModule.forFeature([AuditLogEntity, ClaimStatusHistoryEntity]),
+  ],
   controllers: [AuditController],
   providers: [AuditService],
   exports: [AuditService],

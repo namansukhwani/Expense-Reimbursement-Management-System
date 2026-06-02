@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExchangeRateEntity } from './entities/exchange-rate.entity';
@@ -16,18 +20,25 @@ export class CurrencyService {
 
   async create(dto: CreateExchangeRateDto): Promise<ExchangeRateEntity> {
     const existing = await this.exchangeRateRepo.findOne({
-      where: { sourceCurrency: dto.sourceCurrency, targetCurrency: dto.targetCurrency },
+      where: {
+        sourceCurrency: dto.sourceCurrency,
+        targetCurrency: dto.targetCurrency,
+      },
     });
-    
+
     if (existing) {
-      throw new BadRequestException('Exchange rate for this currency pair already exists.');
+      throw new BadRequestException(
+        'Exchange rate for this currency pair already exists.',
+      );
     }
 
     const rate = this.exchangeRateRepo.create(dto);
     return this.exchangeRateRepo.save(rate);
   }
 
-  async findAll(query: PaginationQueryDto): Promise<PaginatedResult<ExchangeRateEntity>> {
+  async findAll(
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<ExchangeRateEntity>> {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
@@ -58,7 +69,10 @@ export class CurrencyService {
     }
   }
 
-  async getRate(sourceCurrency: string, targetCurrency: string): Promise<number> {
+  async getRate(
+    sourceCurrency: string,
+    targetCurrency: string,
+  ): Promise<number> {
     if (sourceCurrency === targetCurrency) return 1;
 
     const rateEntity = await this.exchangeRateRepo.findOne({
@@ -67,13 +81,19 @@ export class CurrencyService {
     });
 
     if (!rateEntity) {
-      throw new NotFoundException(`Exchange rate from ${sourceCurrency} to ${targetCurrency} not found`);
+      throw new NotFoundException(
+        `Exchange rate from ${sourceCurrency} to ${targetCurrency} not found`,
+      );
     }
 
     return rateEntity.rate;
   }
 
-  async convert(amount: number, sourceCurrency: string, targetCurrency: string): Promise<Money> {
+  async convert(
+    amount: number,
+    sourceCurrency: string,
+    targetCurrency: string,
+  ): Promise<Money> {
     const rate = await this.getRate(sourceCurrency, targetCurrency);
     const sourceMoney = new Money(amount, sourceCurrency);
     return sourceMoney.toBase(rate, targetCurrency);

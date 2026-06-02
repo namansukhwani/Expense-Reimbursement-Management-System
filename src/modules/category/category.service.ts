@@ -19,7 +19,9 @@ export class CategoryService {
     return this.categoryRepo.save(category);
   }
 
-  async findAll(query: PaginationQueryDto): Promise<PaginatedResult<CategoryEntity>> {
+  async findAll(
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<CategoryEntity>> {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
@@ -44,7 +46,10 @@ export class CategoryService {
   }
 
   async findActiveCategories(): Promise<CategoryEntity[]> {
-    return this.categoryRepo.find({ where: { isActive: true }, order: { name: 'ASC' } });
+    return this.categoryRepo.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   async findOne(id: string): Promise<CategoryEntity> {
@@ -61,7 +66,9 @@ export class CategoryService {
     return this.categoryRepo.save(category);
   }
 
-  async getCategoryLimit(categoryId: string): Promise<{ limit: number | null, currency: string | null }> {
+  async getCategoryLimit(
+    categoryId: string,
+  ): Promise<{ limit: number | null; currency: string | null }> {
     const category = await this.findOne(categoryId);
     return {
       limit: category.reimbursementLimit,

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Param, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { CurrencyService } from './currency.service';
 import { CreateExchangeRateDto } from './dto/create-exchange-rate.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';

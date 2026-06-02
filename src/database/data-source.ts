@@ -23,7 +23,18 @@ export default new DataSource({
   database: process.env.DB_DATABASE || 'expense_reimbursement',
   synchronize: false,
   logging: true,
-  entities: [UserEntity, DepartmentEntity, CategoryEntity, ExchangeRateEntity, SystemSettingEntity, ExpenseEntity, AuditLogEntity, ClaimStatusHistoryEntity, ReimbursementClaimEntity, ApprovalActionEntity], // Add future entities here
+  entities: [
+    UserEntity,
+    DepartmentEntity,
+    CategoryEntity,
+    ExchangeRateEntity,
+    SystemSettingEntity,
+    ExpenseEntity,
+    AuditLogEntity,
+    ClaimStatusHistoryEntity,
+    ReimbursementClaimEntity,
+    ApprovalActionEntity,
+  ], // Add future entities here
   migrations: ['src/database/migrations/*.ts'],
   migrationsTableName: 'migrations',
 });

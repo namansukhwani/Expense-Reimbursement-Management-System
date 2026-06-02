@@ -5,7 +5,7 @@ export class Money {
   ) {}
 
   toBase(rate: number, baseCurrency: string): Money {
-    const convertedAmount = Math.round((this.amount * rate) * 100) / 100;
+    const convertedAmount = Math.round(this.amount * rate * 100) / 100;
     return new Money(convertedAmount, baseCurrency);
   }
 

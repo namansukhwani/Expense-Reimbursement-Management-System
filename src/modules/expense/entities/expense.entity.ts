@@ -24,7 +24,13 @@ export class ExpenseEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 3 })
   currency: string;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, name: 'converted_amount', nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    name: 'converted_amount',
+    nullable: true,
+  })
   convertedAmount: number;
 
   @Column({ type: 'varchar', length: 3, name: 'base_currency', nullable: true })

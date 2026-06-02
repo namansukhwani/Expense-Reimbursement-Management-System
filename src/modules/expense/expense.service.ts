@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { ExpenseEntity } from './entities/expense.entity';
@@ -28,12 +32,16 @@ export class ExpenseService {
     await this.categoryService.findOne(dto.categoryId);
 
     const baseCurrency = await this.settingsService.getBaseCurrency();
-    const convertedMoney = await this.currencyService.convert(dto.amount, dto.currency, baseCurrency);
+    const convertedMoney = await this.currencyService.convert(
+      dto.amount,
+      dto.currency,
+      baseCurrency,
+    );
 
     const { hasViolation, reason } = await this.policyValidator.validate(
       dto.categoryId,
       convertedMoney.amount,
-      baseCurrency
+      baseCurrency,
     );
 
     const expense = this.expenseRepo.create({
@@ -49,7 +57,10 @@ export class ExpenseService {
     return this.expenseRepo.save(expense);
   }
 
-  async findAllByUser(userId: string, query: PaginationQueryDto): Promise<PaginatedResult<ExpenseEntity>> {
+  async findAllByUser(
+    userId: string,
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<ExpenseEntity>> {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
@@ -69,18 +80,27 @@ export class ExpenseService {
   }
 
   async findById(id: string, userId: string): Promise<ExpenseEntity> {
-    const expense = await this.expenseRepo.findOne({ where: { id, userId }, relations: { category: true } });
+    const expense = await this.expenseRepo.findOne({
+      where: { id, userId },
+      relations: { category: true },
+    });
     if (!expense) {
       throw new NotFoundException(`Expense #${id} not found`);
     }
     return expense;
   }
 
-  async update(id: string, userId: string, dto: UpdateExpenseDto): Promise<ExpenseEntity> {
+  async update(
+    id: string,
+    userId: string,
+    dto: UpdateExpenseDto,
+  ): Promise<ExpenseEntity> {
     const expense = await this.findById(id, userId);
 
     if (expense.claimId) {
-      throw new BadRequestException('Cannot edit an expense that is attached to a claim.');
+      throw new BadRequestException(
+        'Cannot edit an expense that is attached to a claim.',
+      );
     }
 
     if (dto.amount || dto.currency || dto.categoryId) {
@@ -89,13 +109,21 @@ export class ExpenseService {
       const categoryId = dto.categoryId || expense.categoryId;
 
       if (dto.categoryId && dto.categoryId !== expense.categoryId) {
-         await this.categoryService.findOne(dto.categoryId);
+        await this.categoryService.findOne(dto.categoryId);
       }
 
       const baseCurrency = expense.baseCurrency;
-      const convertedMoney = await this.currencyService.convert(amount, currency, baseCurrency);
+      const convertedMoney = await this.currencyService.convert(
+        amount,
+        currency,
+        baseCurrency,
+      );
 
-      const { hasViolation, reason } = await this.policyValidator.validate(categoryId, convertedMoney.amount, baseCurrency);
+      const { hasViolation, reason } = await this.policyValidator.validate(
+        categoryId,
+        convertedMoney.amount,
+        baseCurrency,
+      );
 
       expense.amount = amount;
       expense.currency = currency;
@@ -108,16 +136,19 @@ export class ExpenseService {
     if (dto.title) expense.title = dto.title;
     if (dto.expenseDate) expense.expenseDate = new Date(dto.expenseDate);
     if (dto.notes !== undefined) expense.notes = dto.notes;
-    if (dto.isReimbursable !== undefined) expense.isReimbursable = dto.isReimbursable;
+    if (dto.isReimbursable !== undefined)
+      expense.isReimbursable = dto.isReimbursable;
 
     return this.expenseRepo.save(expense);
   }
 
   async delete(id: string, userId: string): Promise<void> {
     const expense = await this.findById(id, userId);
-    
+
     if (expense.claimId) {
-      throw new BadRequestException('Cannot delete an expense that is attached to a claim.');
+      throw new BadRequestException(
+        'Cannot delete an expense that is attached to a claim.',
+      );
     }
 
     if (expense.receiptFilePath) {
@@ -127,17 +158,23 @@ export class ExpenseService {
     await this.expenseRepo.remove(expense);
   }
 
-  async uploadReceipt(id: string, userId: string, file: Express.Multer.File): Promise<ExpenseEntity> {
+  async uploadReceipt(
+    id: string,
+    userId: string,
+    file: Express.Multer.File,
+  ): Promise<ExpenseEntity> {
     const expense = await this.findById(id, userId);
 
     if (expense.claimId) {
-      throw new BadRequestException('Cannot modify receipt of an expense attached to a claim.');
+      throw new BadRequestException(
+        'Cannot modify receipt of an expense attached to a claim.',
+      );
     }
 
     const subPath = await this.localStorageService.upload(file, userId);
-    
+
     if (expense.receiptFilePath) {
-       await this.localStorageService.delete(expense.receiptFilePath);
+      await this.localStorageService.delete(expense.receiptFilePath);
     }
 
     expense.receiptFilePath = subPath;
@@ -154,9 +191,11 @@ export class ExpenseService {
 
   async deleteReceipt(id: string, userId: string): Promise<ExpenseEntity> {
     const expense = await this.findById(id, userId);
-    
+
     if (expense.claimId) {
-      throw new BadRequestException('Cannot modify receipt of an expense attached to a claim.');
+      throw new BadRequestException(
+        'Cannot modify receipt of an expense attached to a claim.',
+      );
     }
 
     if (expense.receiptFilePath) {
