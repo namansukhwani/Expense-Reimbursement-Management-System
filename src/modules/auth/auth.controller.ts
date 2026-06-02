@@ -3,6 +3,7 @@ import {
   Post,
   Body,
   Get,
+  Request,
   UseGuards,
   Headers,
   UnauthorizedException,
@@ -10,7 +11,6 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -36,8 +36,10 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@CurrentUser() user: any) {
-    const data = await this.authService.getProfile(user.id);
+  async getProfile(
+    @Request() req: import('express').Request & { user: { id: string } },
+  ) {
+    const data = await this.authService.getProfile(req.user.id);
     return { success: true, data };
   }
 }

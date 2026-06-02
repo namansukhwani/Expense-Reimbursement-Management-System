@@ -19,6 +19,7 @@ import { BudgetModule } from './modules/budget/budget.module';
 import { ApprovalModule } from './modules/approval/approval.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuditInterceptor } from './common/interceptors/audit.interceptor';
+import { ApiLoggingInterceptor } from './common/interceptors/api-logging.interceptor';
 
 @Module({
   imports: [
@@ -53,6 +54,10 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
   controllers: [AppController],
   providers: [
     AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ApiLoggingInterceptor,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: AuditInterceptor,

@@ -16,7 +16,7 @@ export class ExpenseEntity extends BaseEntity {
   categoryId: string;
 
   @Column({ type: 'uuid', name: 'claim_id', nullable: true })
-  claimId: string;
+  claimId: string | null;
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   amount: number;

@@ -17,7 +17,7 @@ export class AuditInterceptor implements NestInterceptor {
     private auditService: AuditService,
   ) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const entityType = this.reflector.getAllAndOverride<string>(AUDITABLE_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -29,7 +29,7 @@ export class AuditInterceptor implements NestInterceptor {
 
     const req = context
       .switchToHttp()
-      .getRequest<import('express').Request & { user?: any }>();
+      .getRequest<import('express').Request & { user?: { sub: string } }>();
     const actorId = req.user?.sub;
     const ipAddress = req.ip;
     const method = req.method;
@@ -40,9 +40,10 @@ export class AuditInterceptor implements NestInterceptor {
     else if (method === 'DELETE') action = 'DELETE';
 
     return next.handle().pipe(
-      tap((response) => {
-        const data = response?.data;
-        if (data && data.id) {
+      tap((response: unknown) => {
+        const res = response as Record<string, unknown>;
+        const data = res?.data as Record<string, unknown>;
+        if (data && typeof data.id === 'string') {
           // Fire and forget audit log creation
           this.auditService
             .logAction(
@@ -50,8 +51,8 @@ export class AuditInterceptor implements NestInterceptor {
               data.id,
               action,
               actorId,
-              undefined, // We could capture body as new values if needed
-              req.body,
+              undefined,
+              req.body as Record<string, unknown>,
               ipAddress,
             )
             .catch((e) => console.error('Audit logging failed', e));

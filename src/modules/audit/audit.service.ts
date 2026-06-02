@@ -21,8 +21,8 @@ export class AuditService {
     entityId: string,
     action: string,
     actorId?: string,
-    oldValues?: Record<string, any>,
-    newValues?: Record<string, any>,
+    oldValues?: Record<string, unknown>,
+    newValues?: Record<string, unknown>,
     ipAddress?: string,
   ): Promise<AuditLogEntity> {
     const log = this.auditLogRepo.create({
@@ -65,7 +65,7 @@ export class AuditService {
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: import('typeorm').FindOptionsWhere<AuditLogEntity> = {};
     if (query.entityType) where.entityType = query.entityType;
     if (query.entityId) where.entityId = query.entityId;
     if (query.actorId) where.actorId = query.actorId;

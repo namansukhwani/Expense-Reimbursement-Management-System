@@ -18,15 +18,11 @@ export class AuditLogEntity extends BaseEntity {
   @Column({ type: 'uuid', name: 'actor_id', nullable: true })
   actorId: string;
 
-  @ManyToOne(() => UserEntity, { nullable: true })
-  @JoinColumn({ name: 'actor_id' })
-  actor: UserEntity;
-
   @Column({ type: 'jsonb', name: 'old_values', nullable: true })
-  oldValues: Record<string, any>;
+  oldValues: Record<string, unknown>;
 
   @Column({ type: 'jsonb', name: 'new_values', nullable: true })
-  newValues: Record<string, any>;
+  newValues: Record<string, unknown>;
 
   @Column({ type: 'varchar', name: 'ip_address', nullable: true })
   ipAddress: string;

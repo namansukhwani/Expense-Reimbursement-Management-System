@@ -142,6 +142,15 @@ export class ExpenseService {
     return this.expenseRepo.save(expense);
   }
 
+  async setClaimId(
+    id: string,
+    userId: string,
+    claimId: string | null,
+  ): Promise<ExpenseEntity> {
+    await this.expenseRepo.update({ id, userId }, { claimId });
+    return this.findById(id, userId);
+  }
+
   async delete(id: string, userId: string): Promise<void> {
     const expense = await this.findById(id, userId);
 

@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import type { StringValue } from 'ms';
 
 import { UserEntity } from './entities/user.entity';
 import { LoginDto } from './dto/login.dto';
@@ -47,7 +48,7 @@ export class AuthService {
     try {
       const payload = this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('jwt.secret'),
-      });
+      }) as unknown as { sub: string };
 
       const user = await this.userRepository.findOne({
         where: { id: payload.sub, isActive: true },
@@ -83,13 +84,15 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: (this.configService.get<string>('jwt.accessExpiry') ||
-        '15m') as any,
+      expiresIn:
+        (this.configService.get<string>('jwt.accessExpiry') as StringValue) ||
+        '15m',
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: (this.configService.get<string>('jwt.refreshExpiry') ||
-        '7d') as any,
+      expiresIn:
+        (this.configService.get<string>('jwt.refreshExpiry') as StringValue) ||
+        '7d',
     });
 
     return {

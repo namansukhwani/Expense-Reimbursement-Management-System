@@ -11,7 +11,7 @@ export class ClaimResponseDto {
   resolvedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-  expenses: any[];
-  statusHistory: any[];
-  approvalActions?: any[];
+  expenses: import('../../expense/entities/expense.entity').ExpenseEntity[];
+  statusHistory: import('../../audit/entities/claim-status-history.entity').ClaimStatusHistoryEntity[];
+  approvalActions?: import('../../approval/entities/approval-action.entity').ApprovalActionEntity[];
 }

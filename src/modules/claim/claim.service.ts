@@ -76,10 +76,7 @@ export class ClaimService {
 
     // Attach expenses
     for (const exp of expensesToAttach) {
-      await this.expenseService.update(exp.id, userId, {
-        ...exp,
-        claimId: claim.id,
-      } as any);
+      await this.expenseService.setClaimId(exp.id, userId, claim.id);
     }
 
     return claim;
@@ -89,7 +86,8 @@ export class ClaimService {
     claimId: string,
     userId?: string,
   ): Promise<ReimbursementClaimEntity> {
-    const where: any = { id: claimId };
+    const where: import('typeorm').FindOptionsWhere<ReimbursementClaimEntity> =
+      { id: claimId };
     if (userId) {
       where.userId = userId;
     }
@@ -127,10 +125,7 @@ export class ClaimService {
       for (const expenseId of dto.removeExpenseIds) {
         const exp = claim.expenses.find((e) => e.id === expenseId);
         if (exp) {
-          await this.expenseService.update(exp.id, userId, {
-            ...exp,
-            claimId: null,
-          } as any);
+          await this.expenseService.setClaimId(exp.id, userId, null);
           changed = true;
         }
       }
@@ -148,10 +143,7 @@ export class ClaimService {
           );
         }
         const exp = unattachedExpenses.find((e) => e.id === expenseId)!;
-        await this.expenseService.update(exp.id, userId, {
-          ...exp,
-          claimId: claim.id,
-        } as any);
+        await this.expenseService.setClaimId(exp.id, userId, claim.id);
         changed = true;
       }
     }
@@ -220,7 +212,7 @@ export class ClaimService {
       await this.expenseService.update(exp.id, userId, {
         ...exp,
         claimId: null,
-      } as any);
+      } as unknown as import('../expense/dto/update-expense.dto').UpdateExpenseDto);
     }
 
     const saved = await this.claimRepo.save(claim);
@@ -244,7 +236,8 @@ export class ClaimService {
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
 
-    const where: any = { userId };
+    const where: import('typeorm').FindOptionsWhere<ReimbursementClaimEntity> =
+      { userId };
     if (query.status) {
       where.status = query.status;
     }
