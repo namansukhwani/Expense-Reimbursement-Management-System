@@ -35,15 +35,15 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 > Bootstrap NestJS project, configure TypeORM, set up shared infrastructure.
 
-- [ ] **1.1** Scaffold NestJS project using `npx -y @nestjs/cli new ./` with strict TypeScript
-- [ ] **1.2** Install core dependencies: `@nestjs/typeorm`, `typeorm`, `pg`, `@nestjs/config`, `@nestjs/jwt`, `@nestjs/passport`, `passport-jwt`, `bcrypt`, `class-validator`, `class-transformer`, `uuid`
-- [ ] **1.3** Create `src/config/app.config.ts` — register env vars: `APP_PORT`, `APP_ENV`, `API_PREFIX`
-- [ ] **1.4** Create `src/config/database.config.ts` — TypeORM connection config from env vars
-- [ ] **1.5** Create `src/config/jwt.config.ts` — `JWT_SECRET`, `JWT_ACCESS_EXPIRY`, `JWT_REFRESH_EXPIRY`
-- [ ] **1.6** Create `src/config/storage.config.ts` — `STORAGE_LOCAL_PATH`, `MAX_FILE_SIZE_MB`, `ALLOWED_FILE_TYPES`
-- [ ] **1.7** Create `.env` and `.env.example` with all config keys from Appendix B
-- [ ] **1.8** Configure `AppModule` with `ConfigModule.forRoot()` (global), `TypeOrmModule.forRootAsync()` using database config
-- [ ] **1.9** Set global prefix `api/v1` and global validation pipe in `main.ts`
+- [x] **1.1** Scaffold NestJS project using `npx -y @nestjs/cli new ./` with strict TypeScript
+- [x] **1.2** Install core dependencies: `@nestjs/typeorm`, `typeorm`, `pg`, `@nestjs/config`, `@nestjs/jwt`, `@nestjs/passport`, `passport-jwt`, `bcrypt`, `class-validator`, `class-transformer`, `uuid`
+- [x] **1.3** Create `src/config/app.config.ts` — register env vars: `APP_PORT`, `APP_ENV`, `API_PREFIX`
+- [x] **1.4** Create `src/config/database.config.ts` — TypeORM connection config from env vars
+- [x] **1.5** Create `src/config/jwt.config.ts` — `JWT_SECRET`, `JWT_ACCESS_EXPIRY`, `JWT_REFRESH_EXPIRY`
+- [x] **1.6** Create `src/config/storage.config.ts` — `STORAGE_LOCAL_PATH`, `MAX_FILE_SIZE_MB`, `ALLOWED_FILE_TYPES`
+- [x] **1.7** Create `.env` and `.env.example` with all config keys from Appendix B
+- [x] **1.8** Configure `AppModule` with `ConfigModule.forRoot()` (global), `TypeOrmModule.forRootAsync()` using database config
+- [x] **1.9** Set global prefix `api/v1` and global validation pipe in `main.ts`
 
 **✅ Validation:** App starts, connects to PostgreSQL, returns 404 on `GET /api/v1/health`
 
@@ -53,14 +53,14 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 > Build reusable base classes, DTOs, filters, pipes, and decorators used across all modules.
 
-- [ ] **2.1** Create `src/common/entities/base.entity.ts` — abstract class with `id` (UUID PK, auto-generated), `createdAt`, `updatedAt` (TypeORM `@CreateDateColumn`, `@UpdateDateColumn`)
-- [ ] **2.2** Create `src/common/enums/claim-status.enum.ts` — `DRAFT | SUBMITTED | APPROVED | PARTIALLY_APPROVED | REJECTED | WITHDRAWN`
-- [ ] **2.3** Create `src/common/enums/user-role.enum.ts` — `EMPLOYEE | MANAGER | ADMIN`
-- [ ] **2.4** Create `src/common/dto/pagination-query.dto.ts` — `page`, `limit`, `sortBy`, `sortOrder`, with `class-validator` decorators, defaults (page=1, limit=20, max=100)
-- [ ] **2.5** Create `src/common/interfaces/paginated-result.interface.ts` — generic `PaginatedResult<T>` with `data`, `meta` (page, limit, total, totalPages)
-- [ ] **2.6** Create `src/common/filters/http-exception.filter.ts` — global exception filter returning `{ success, error: { code, message, details } }` envelope
-- [ ] **2.7** Create `src/common/pipes/validation.pipe.ts` — global validation pipe with `whitelist: true`, `forbidNonWhitelisted: true`, `transform: true`
-- [ ] **2.8** Create `src/common/decorators/current-user.decorator.ts` — `createParamDecorator` extracting user from request
+- [x] **2.1** Create `src/common/entities/base.entity.ts` — abstract class with `id` (UUID PK, auto-generated), `createdAt`, `updatedAt` (TypeORM `@CreateDateColumn`, `@UpdateDateColumn`)
+- [x] **2.2** Create `src/common/enums/claim-status.enum.ts` — `DRAFT | SUBMITTED | APPROVED | PARTIALLY_APPROVED | REJECTED | WITHDRAWN`
+- [x] **2.3** Create `src/common/enums/user-role.enum.ts` — `EMPLOYEE | MANAGER | ADMIN`
+- [x] **2.4** Create `src/common/dto/pagination-query.dto.ts` — `page`, `limit`, `sortBy`, `sortOrder`, with `class-validator` decorators, defaults (page=1, limit=20, max=100)
+- [x] **2.5** Create `src/common/interfaces/paginated-result.interface.ts` — generic `PaginatedResult<T>` with `data`, `meta` (page, limit, total, totalPages)
+- [x] **2.6** Create `src/common/filters/http-exception.filter.ts` — global exception filter returning `{ success, error: { code, message, details } }` envelope
+- [x] **2.7** Create `src/common/pipes/validation.pipe.ts` — global validation pipe with `whitelist: true`, `forbidNonWhitelisted: true`, `transform: true`
+- [x] **2.8** Create `src/common/decorators/current-user.decorator.ts` — `createParamDecorator` extracting user from request
 
 **✅ Validation:** Import common module in AppModule. No runtime errors on startup.
 
@@ -70,16 +70,16 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 > JWT login, token refresh, `/me` endpoint. User entity created here (DB table only, no CRUD controller).
 
-- [ ] **3.1** Create `src/modules/auth/entities/user.entity.ts` — TypeORM entity matching USER schema (id, email, password_hash, first_name, last_name, role enum, department_id FK, reporting_manager_id FK, is_active). Extends `BaseEntity`
-- [ ] **3.2** Create database migration for `user` table with all columns, indexes, and FK constraints
-- [ ] **3.3** Create `src/modules/auth/dto/login.dto.ts` — `email` (IsEmail), `password` (IsString, MinLength)
-- [ ] **3.4** Create `src/modules/auth/dto/auth-response.dto.ts` — `accessToken`, `refreshToken`, `user` (partial)
-- [ ] **3.5** Create `src/modules/auth/strategies/jwt.strategy.ts` — Passport JWT strategy extracting payload `{ sub, email, role, departmentId, reportingManagerId }`
-- [ ] **3.6** Create `src/common/guards/jwt-auth.guard.ts` — extends `AuthGuard('jwt')`
-- [ ] **3.7** Create `src/modules/auth/auth.service.ts` — `login()`: validate credentials, issue access + refresh tokens. `refresh()`: validate refresh token, issue new pair. `getProfile()`: return user from JWT sub
-- [ ] **3.8** Create `src/modules/auth/auth.controller.ts` — `POST /auth/login`, `POST /auth/refresh`, `GET /auth/me` (guarded)
-- [ ] **3.9** Create `src/modules/auth/auth.module.ts` — register JwtModule, PassportModule, UserEntity, AuthService, JwtStrategy
-- [ ] **3.10** Create `src/database/seeds/seed-admin.ts` — seed script to insert default admin user (bcrypt hashed password)
+- [x] **3.1** Create `src/modules/auth/entities/user.entity.ts` — TypeORM entity matching USER schema (id, email, password_hash, first_name, last_name, role enum, department_id FK, reporting_manager_id FK, is_active). Extends `BaseEntity`
+- [x] **3.2** Create database migration for `user` table with all columns, indexes, and FK constraints
+- [x] **3.3** Create `src/modules/auth/dto/login.dto.ts` — `email` (IsEmail), `password` (IsString, MinLength)
+- [x] **3.4** Create `src/modules/auth/dto/auth-response.dto.ts` — `accessToken`, `refreshToken`, `user` (partial)
+- [x] **3.5** Create `src/modules/auth/strategies/jwt.strategy.ts` — Passport JWT strategy extracting payload `{ sub, email, role, departmentId, reportingManagerId }`
+- [x] **3.6** Create `src/common/guards/jwt-auth.guard.ts` — extends `AuthGuard('jwt')`
+- [x] **3.7** Create `src/modules/auth/auth.service.ts` — `login()`: validate credentials, issue access + refresh tokens. `refresh()`: validate refresh token, issue new pair. `getProfile()`: return user from JWT sub
+- [x] **3.8** Create `src/modules/auth/auth.controller.ts` — `POST /auth/login`, `POST /auth/refresh`, `GET /auth/me` (guarded)
+- [x] **3.9** Create `src/modules/auth/auth.module.ts` — register JwtModule, PassportModule, UserEntity, AuthService, JwtStrategy
+- [x] **3.10** Create `src/database/seeds/seed-admin.ts` — seed script to insert default admin user (bcrypt hashed password)
 
 **✅ Validation:** `POST /api/v1/auth/login` returns JWT. `GET /api/v1/auth/me` with Bearer token returns user. Unauthenticated requests return 401.
 
@@ -91,39 +91,39 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 ### 4A: Department Module
 
-- [ ] **4A.1** Create `src/modules/department/entities/department.entity.ts` — matches DEPARTMENT schema. Extends `BaseEntity`
-- [ ] **4A.2** Create migration for `department` table
-- [ ] **4A.3** Create DTOs: `create-department.dto.ts` (name, allocated_budget, budget_currency), `update-department.dto.ts` (PartialType)
-- [ ] **4A.4** Create `department.service.ts` — CRUD + `updateBudget()` method + paginated list
-- [ ] **4A.5** Create `department.controller.ts` — `POST /departments`, `GET /departments`, `GET /departments/:id`, `PATCH /departments/:id`, `PATCH /departments/:id/budget`. All guarded with `JwtAuthGuard`
-- [ ] **4A.6** Create `department.module.ts` — register entity, service, controller
+- [x] **4A.1** Create `src/modules/department/entities/department.entity.ts` — matches DEPARTMENT schema. Extends `BaseEntity`
+- [x] **4A.2** Create migration for `department` table
+- [x] **4A.3** Create DTOs: `create-department.dto.ts` (name, allocated_budget, budget_currency), `update-department.dto.ts` (PartialType)
+- [x] **4A.4** Create `department.service.ts` — CRUD + `updateBudget()` method + paginated list
+- [x] **4A.5** Create `department.controller.ts` — `POST /departments`, `GET /departments`, `GET /departments/:id`, `PATCH /departments/:id`, `PATCH /departments/:id/budget`. All guarded with `JwtAuthGuard`
+- [x] **4A.6** Create `department.module.ts` — register entity, service, controller
 
 ### 4B: Category Module
 
-- [ ] **4B.1** Create `src/modules/category/entities/category.entity.ts` — matches CATEGORY schema. Extends `BaseEntity`
-- [ ] **4B.2** Create migration for `category` table
-- [ ] **4B.3** Create DTOs: `create-category.dto.ts` (name, description, reimbursement_limit, limit_currency), `update-category.dto.ts`
-- [ ] **4B.4** Create `category.service.ts` — CRUD + `findActiveCategories()` + `getCategoryLimit(categoryId)` + paginated list
-- [ ] **4B.5** Create `category.controller.ts` — `POST /categories`, `GET /categories`, `PATCH /categories/:id`
-- [ ] **4B.6** Create `category.module.ts`
+- [x] **4B.1** Create `src/modules/category/entities/category.entity.ts` — matches CATEGORY schema. Extends `BaseEntity`
+- [x] **4B.2** Create migration for `category` table
+- [x] **4B.3** Create DTOs: `create-category.dto.ts` (name, description, reimbursement_limit, limit_currency), `update-category.dto.ts`
+- [x] **4B.4** Create `category.service.ts` — CRUD + `findActiveCategories()` + `getCategoryLimit(categoryId)` + paginated list
+- [x] **4B.5** Create `category.controller.ts` — `POST /categories`, `GET /categories`, `PATCH /categories/:id`
+- [x] **4B.6** Create `category.module.ts`
 
 ### 4C: Currency Module
 
-- [ ] **4C.1** Create `src/modules/currency/entities/exchange-rate.entity.ts` — matches EXCHANGE_RATE schema. Extends `BaseEntity`. Unique constraint on `(source_currency, target_currency)`
-- [ ] **4C.2** Create migration for `exchange_rate` table with unique index
-- [ ] **4C.3** Create `src/modules/currency/value-objects/money.vo.ts` — Money value object (amount, currency, `toBase(rate)`, `equals()`)
-- [ ] **4C.4** Create DTOs: `create-exchange-rate.dto.ts` (source_currency, target_currency, rate, effective_from), `exchange-rate-response.dto.ts`
-- [ ] **4C.5** Create `currency.service.ts` — CRUD + `convert(amount, sourceCurrency, targetCurrency): Money` + `getRate(source, target): number`
-- [ ] **4C.6** Create `currency.controller.ts` — `POST /exchange-rates`, `GET /exchange-rates`, `DELETE /exchange-rates/:id`
-- [ ] **4C.7** Create `currency.module.ts` — export `CurrencyService` for use by ExpenseModule
+- [x] **4C.1** Create `src/modules/currency/entities/exchange-rate.entity.ts` — matches EXCHANGE_RATE schema. Extends `BaseEntity`. Unique constraint on `(source_currency, target_currency)`
+- [x] **4C.2** Create migration for `exchange_rate` table with unique index
+- [x] **4C.3** Create `src/modules/currency/value-objects/money.vo.ts` — Money value object (amount, currency, `toBase(rate)`, `equals()`)
+- [x] **4C.4** Create DTOs: `create-exchange-rate.dto.ts` (source_currency, target_currency, rate, effective_from), `exchange-rate-response.dto.ts`
+- [x] **4C.5** Create `currency.service.ts` — CRUD + `convert(amount, sourceCurrency, targetCurrency): Money` + `getRate(source, target): number`
+- [x] **4C.6** Create `currency.controller.ts` — `POST /exchange-rates`, `GET /exchange-rates`, `DELETE /exchange-rates/:id`
+- [x] **4C.7** Create `currency.module.ts` — export `CurrencyService` for use by ExpenseModule
 
 ### 4D: Settings Module
 
-- [ ] **4D.1** Create `src/modules/settings/entities/system-setting.entity.ts` — matches SYSTEM_SETTING schema
-- [ ] **4D.2** Create migration for `system_setting` table. Seed `BASE_CURRENCY = USD`
-- [ ] **4D.3** Create `settings.service.ts` — `get(key)`, `set(key, value)`, `getAll()`, `getBaseCurrency(): string`
-- [ ] **4D.4** Create `settings.controller.ts` — `GET /settings`, `PATCH /settings/:key`
-- [ ] **4D.5** Create `settings.module.ts` — export `SettingsService` globally
+- [x] **4D.1** Create `src/modules/settings/entities/system-setting.entity.ts` — matches SYSTEM_SETTING schema
+- [x] **4D.2** Create migration for `system_setting` table. Seed `BASE_CURRENCY = USD`
+- [x] **4D.3** Create `settings.service.ts` — `get(key)`, `set(key, value)`, `getAll()`, `getBaseCurrency(): string`
+- [x] **4D.4** Create `settings.controller.ts` — `GET /settings`, `PATCH /settings/:key`
+- [x] **4D.5** Create `settings.module.ts` — export `SettingsService` globally
 
 **✅ Validation (Phase 4):** All CRUD endpoints work. Categories have limits. Exchange rates have unique pairs. Settings returns base currency. All paginated.
 
@@ -133,12 +133,12 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 > Employee creates/edits/deletes expenses, uploads receipts. Policy validation flags violations.
 
-- [ ] **5.1** Create `src/modules/expense/entities/expense.entity.ts` — matches EXPENSE schema. Relations: `@ManyToOne(() => User)`, `@ManyToOne(() => Category)`, `@ManyToOne(() => ReimbursementClaim, { nullable: true })`. Extends `BaseEntity`
-- [ ] **5.2** Create migration for `expense` table with all indexes (user_id, claim_id, category_id, reimbursable partial index)
-- [ ] **5.3** Create DTOs: `create-expense.dto.ts` (title, categoryId, amount, currency, expenseDate, notes, isReimbursable), `update-expense.dto.ts`, `expense-response.dto.ts` (includes convertedAmount, baseCurrency, hasPolicyViolation, policyViolationReason)
-- [ ] **5.4** Create `src/modules/expense/local-storage.service.ts` — `upload(file, subPath): string`, `download(filePath): Buffer`, `delete(filePath): void`. Uses `fs/promises`. Creates upload dir if not exists. Path: `{STORAGE_LOCAL_PATH}/{userId}/{uuid}-{originalName}`
-- [ ] **5.5** Create `src/modules/expense/policy-validator.service.ts` — inject `CategoryService`. Method: `validate(expense): { hasViolation: boolean, reason: string | null }`. Compares expense amount (converted to limit currency) against category limit. **Flags but does NOT block**
-- [ ] **5.6** Create `expense.service.ts`:
+- [x] **5.1** Create `src/modules/expense/entities/expense.entity.ts` — matches EXPENSE schema. Relations: `@ManyToOne(() => User)`, `@ManyToOne(() => Category)`, `@ManyToOne(() => ReimbursementClaim, { nullable: true })`. Extends `BaseEntity`
+- [x] **5.2** Create migration for `expense` table with all indexes (user_id, claim_id, category_id, reimbursable partial index)
+- [x] **5.3** Create DTOs: `create-expense.dto.ts` (title, categoryId, amount, currency, expenseDate, notes, isReimbursable), `update-expense.dto.ts`, `expense-response.dto.ts` (includes convertedAmount, baseCurrency, hasPolicyViolation, policyViolationReason)
+- [x] **5.4** Create `src/modules/expense/local-storage.service.ts` — `upload(file, subPath): string`, `download(filePath): Buffer`, `delete(filePath): void`. Uses `fs/promises`. Creates upload dir if not exists. Path: `{STORAGE_LOCAL_PATH}/{userId}/{uuid}-{originalName}`
+- [x] **5.5** Create `src/modules/expense/policy-validator.service.ts` — inject `CategoryService`. Method: `validate(expense): { hasViolation: boolean, reason: string | null }`. Compares expense amount (converted to limit currency) against category limit. **Flags but does NOT block**
+- [x] **5.6** Create `expense.service.ts`:
   - `create()`: validate category exists, convert to base currency via `CurrencyService`, run policy validation, save
   - `update()`: only if expense not attached to a submitted/approved claim
   - `delete()`: only if expense not attached to a submitted/approved claim, also delete receipt file
@@ -148,7 +148,7 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
   - `downloadReceipt()`: return buffer from `LocalStorageService.download()`
   - `deleteReceipt()`: remove file, clear entity fields
   - `findUnattachedReimbursable(userId)`: expenses where `isReimbursable=true` AND `claimId IS NULL`
-- [ ] **5.7** Create `expense.controller.ts`:
+- [x] **5.7** Create `expense.controller.ts`:
   - `POST /expenses` — create
   - `GET /expenses` — list (paginated)
   - `GET /expenses/:id` — detail
@@ -157,7 +157,7 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
   - `POST /expenses/:id/receipt` — upload (multipart, `@UseInterceptors(FileInterceptor('receipt'))`)
   - `GET /expenses/:id/receipt` — download (stream response)
   - `DELETE /expenses/:id/receipt` — remove
-- [ ] **5.8** Create `expense.module.ts` — import `CategoryModule`, `CurrencyModule`, `SettingsModule`. Register entity, services, controller
+- [x] **5.8** Create `expense.module.ts` — import `CategoryModule`, `CurrencyModule`, `SettingsModule`. Register entity, services, controller
 
 **✅ Validation:** Create expense → auto-converts to base currency. Policy violation flagged (not blocked). Receipt upload/download works. Cannot edit expense attached to submitted claim.
 
@@ -167,18 +167,18 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 > Audit log + claim status history. Built before Claim module since Claim and Approval both depend on it.
 
-- [ ] **6.1** Create `src/modules/audit/entities/audit-log.entity.ts` — matches AUDIT_LOG schema. `old_values` and `new_values` as `jsonb` columns
-- [ ] **6.2** Create `src/modules/audit/entities/claim-status-history.entity.ts` — matches CLAIM_STATUS_HISTORY schema. Relations to claim, user
-- [ ] **6.3** Create migrations for `audit_log` and `claim_status_history` tables with indexes
-- [ ] **6.4** Create `audit.service.ts`:
+- [x] **6.1** Create `src/modules/audit/entities/audit-log.entity.ts` — matches AUDIT_LOG schema. `old_values` and `new_values` as `jsonb` columns
+- [x] **6.2** Create `src/modules/audit/entities/claim-status-history.entity.ts` — matches CLAIM_STATUS_HISTORY schema. Relations to claim, user
+- [x] **6.3** Create migrations for `audit_log` and `claim_status_history` tables with indexes
+- [x] **6.4** Create `audit.service.ts`:
   - `logAction(entityType, entityId, action, actorId, oldValues?, newValues?, ipAddress?)`: insert audit log
   - `logStatusChange(claimId, fromStatus, toStatus, changedById, reason?)`: insert claim status history
   - `findAuditLogs(filters)`: paginated, filterable by entity_type, entity_id, actor_id, date range
   - `findClaimHistory(claimId)`: ordered by changed_at ASC
-- [ ] **6.5** Create `src/common/interceptors/audit.interceptor.ts` — NestJS interceptor. Captures entity type (from `@Auditable()` decorator), compares pre/post state for updates, calls `AuditService.logAction()`. Extracts actor from request user, IP from request
-- [ ] **6.6** Create `src/common/decorators/auditable.decorator.ts` — `@Auditable('EXPENSE')` sets metadata for audit interceptor
-- [ ] **6.7** Create `audit.controller.ts` — `GET /audit-logs` (paginated, filterable), `GET /claims/:id/history`
-- [ ] **6.8** Create `audit.module.ts` — export `AuditService` globally for use by Claim, Approval modules
+- [x] **6.5** Create `src/common/interceptors/audit.interceptor.ts` — NestJS interceptor. Captures entity type (from `@Auditable()` decorator), compares pre/post state for updates, calls `AuditService.logAction()`. Extracts actor from request user, IP from request
+- [x] **6.6** Create `src/common/decorators/auditable.decorator.ts` — `@Auditable('EXPENSE')` sets metadata for audit interceptor
+- [x] **6.7** Create `audit.controller.ts` — `GET /audit-logs` (paginated, filterable), `GET /claims/:id/history`
+- [x] **6.8** Create `audit.module.ts` — export `AuditService` globally for use by Claim, Approval modules
 
 **✅ Validation:** Manual call to `AuditService.logAction()` persists audit record. `GET /audit-logs` returns paginated results.
 
@@ -188,15 +188,15 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 > Create, edit, submit, withdraw reimbursement claims. State machine enforces transitions.
 
-- [ ] **7.1** Create `src/modules/claim/entities/reimbursement-claim.entity.ts` — matches REIMBURSEMENT_CLAIM schema. Relations: `@ManyToOne(() => User)` (employee), `@ManyToOne(() => Department)`, `@OneToMany(() => Expense)`, `@OneToMany(() => ApprovalAction)`, `@OneToMany(() => ClaimStatusHistory)`. Extends `BaseEntity`
-- [ ] **7.2** Create migration for `reimbursement_claim` table with indexes. Create DB sequence for claim_number: `CLM-{YYYY}-{seq:5}`
-- [ ] **7.3** Create DTOs: `create-claim.dto.ts` (expenseIds: UUID[], employeeNotes?), `update-claim.dto.ts` (addExpenseIds?, removeExpenseIds?, employeeNotes?), `claim-response.dto.ts` (includes expenses[], statusHistory[], approvalActions[])
-- [ ] **7.4** Create `src/modules/claim/claim-state-machine.service.ts`:
+- [x] **7.1** Create `src/modules/claim/entities/reimbursement-claim.entity.ts` — matches REIMBURSEMENT_CLAIM schema. Relations: `@ManyToOne(() => User)` (employee), `@ManyToOne(() => Department)`, `@OneToMany(() => Expense)`, `@OneToMany(() => ApprovalAction)`, `@OneToMany(() => ClaimStatusHistory)`. Extends `BaseEntity`
+- [x] **7.2** Create migration for `reimbursement_claim` table with indexes. Create DB sequence for claim_number: `CLM-{YYYY}-{seq:5}`
+- [x] **7.3** Create DTOs: `create-claim.dto.ts` (expenseIds: UUID[], employeeNotes?), `update-claim.dto.ts` (addExpenseIds?, removeExpenseIds?, employeeNotes?), `claim-response.dto.ts` (includes expenses[], statusHistory[], approvalActions[])
+- [x] **7.4** Create `src/modules/claim/claim-state-machine.service.ts`:
   - Define valid transitions map: `{ DRAFT: [SUBMITTED], SUBMITTED: [APPROVED, PARTIALLY_APPROVED, REJECTED, WITHDRAWN] }`
   - `canTransition(from, to): boolean`
   - `validateTransition(from, to): void` — throws `CLAIM_INVALID_STATE_TRANSITION` if invalid
   - `getAvailableTransitions(status): ClaimStatus[]`
-- [ ] **7.5** Create `claim.service.ts`:
+- [x] **7.5** Create `claim.service.ts`:
   - `create(userId, dto)`: generate claim_number, validate all expenseIds belong to user and are reimbursable and unattached, calculate total_amount (sum of converted amounts), set status=DRAFT, attach expenses (set expense.claimId)
   - `update(claimId, userId, dto)`: only if DRAFT. Add/remove expenses, recalculate total
   - `submit(claimId, userId)`: validate DRAFT→SUBMITTED via state machine, validate ≥1 expense, set submitted_at. Log status change via AuditService
@@ -204,14 +204,14 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
   - `findById(claimId, userId)`: with expenses, history, approval actions
   - `findAllByUser(userId, filters)`: paginated, filterable by status
   - `findPendingForManager(managerId)`: find claims where employee.reporting_manager_id = managerId AND status = SUBMITTED
-- [ ] **7.6** Create `claim.controller.ts`:
+- [x] **7.6** Create `claim.controller.ts`:
   - `POST /claims` — create draft
   - `GET /claims` — list my claims
   - `GET /claims/:id` — detail with expenses + history
   - `PATCH /claims/:id` — update draft
   - `POST /claims/:id/submit` — submit
   - `POST /claims/:id/withdraw` — withdraw
-- [ ] **7.7** Create `claim.module.ts` — import `ExpenseModule` (forwardRef if circular), `AuditModule`. Export `ClaimService` for ApprovalModule
+- [x] **7.7** Create `claim.module.ts` — import `ExpenseModule` (forwardRef if circular), `AuditModule`. Export `ClaimService` for ApprovalModule
 
 **✅ Validation:** Create claim with expenses → DRAFT. Submit → SUBMITTED (logged in status history). Withdraw → WITHDRAWN (expenses detached). Invalid transition → 400 error. Cannot submit with 0 expenses.
 
@@ -221,12 +221,12 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 > Internal service consumed by ApprovalModule. No controller for MVP.
 
-- [ ] **8.1** Create `src/modules/budget/budget.service.ts`:
+- [x] **8.1** Create `src/modules/budget/budget.service.ts`:
   - `consumeBudget(departmentId, amount, currency)`: atomically increment consumed budget on department. Uses TypeORM query builder with `UPDATE ... SET consumed_budget = consumed_budget + :amount`. Validates consumed ≤ allocated (throws `INSUFFICIENT_DEPARTMENT_BUDGET` if exceeded)
   - `releaseBudget(departmentId, amount)`: reverse consumption (for future use — claim reversal)
   - `getBudgetSummary(departmentId)`: returns `{ allocated, consumed, remaining, currency }`
-- [ ] **8.2** Add `consumed_budget` column (decimal, default 0) to department entity and migration
-- [ ] **8.3** Create `budget.module.ts` — import `DepartmentModule`, export `BudgetService`
+- [x] **8.2** Add `consumed_budget` column (decimal, default 0) to department entity and migration
+- [x] **8.3** Create `budget.module.ts` — import `DepartmentModule`, export `BudgetService`
 
 **✅ Validation:** `consumeBudget()` updates department record. Exceeding allocation throws error. `getBudgetSummary()` returns correct remaining.
 
@@ -236,13 +236,13 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 > Manager approves/rejects claims. Transactionally updates claim status + budget.
 
-- [ ] **9.1** Create `src/modules/approval/entities/approval-action.entity.ts` — matches APPROVAL_ACTION schema. Relations: `@ManyToOne(() => ReimbursementClaim)`, `@ManyToOne(() => User)` (manager). Extends `BaseEntity`
-- [ ] **9.2** Create migration for `approval_action` table with indexes
-- [ ] **9.3** Create DTOs:
+- [x] **9.1** Create `src/modules/approval/entities/approval-action.entity.ts` — matches APPROVAL_ACTION schema. Relations: `@ManyToOne(() => ReimbursementClaim)`, `@ManyToOne(() => User)` (manager). Extends `BaseEntity`
+- [x] **9.2** Create migration for `approval_action` table with indexes
+- [x] **9.3** Create DTOs:
   - `approve-claim.dto.ts` (comment?: string)
   - `partial-approve-claim.dto.ts` (approvedAmount: number — required, IsPositive; comment: string — required, MinLength(10))
   - `reject-claim.dto.ts` (comment: string — required, MinLength(10))
-- [ ] **9.4** Create `approval.service.ts`:
+- [x] **9.4** Create `approval.service.ts`:
   - **All approval actions wrapped in TypeORM transaction** (`queryRunner.startTransaction()`)
   - `approve(claimId, managerId, dto)`:
     1. Load claim with employee relation
@@ -265,14 +265,14 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
     3. Comment mandatory
   - `findPendingForManager(managerId)`: claims where employee's reporting manager = managerId AND status = SUBMITTED. Paginated
   - `findApprovalHistory(managerId)`: past actions by this manager. Paginated
-- [ ] **9.5** Create `approval.controller.ts`:
+- [x] **9.5** Create `approval.controller.ts`:
   - `GET /approvals/pending` — list pending claims for current manager
   - `GET /approvals/history` — list past approval actions
   - `GET /approvals/claims/:id` — view claim detail for review
   - `POST /approvals/claims/:id/approve` — approve
   - `POST /approvals/claims/:id/partial-approve` — partial approve
   - `POST /approvals/claims/:id/reject` — reject
-- [ ] **9.6** Create `approval.module.ts` — import `ClaimModule`, `BudgetModule`, `AuditModule`
+- [x] **9.6** Create `approval.module.ts` — import `ClaimModule`, `BudgetModule`, `AuditModule`
 
 **✅ Validation:** Approve claim → status=APPROVED, budget consumed. Partial approve → PARTIALLY_APPROVED, partial budget consumed, comment saved. Reject → REJECTED, no budget consumed, comment saved. Non-manager → 403. Non-SUBMITTED claim → 400. All actions logged in audit + status history.
 
