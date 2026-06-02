@@ -16,6 +16,9 @@ import { ExpenseModule } from './modules/expense/expense.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { ClaimModule } from './modules/claim/claim.module';
 import { BudgetModule } from './modules/budget/budget.module';
+import { ApprovalModule } from './modules/approval/approval.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuditInterceptor } from './common/interceptors/audit.interceptor';
 
 @Module({
   imports: [
@@ -45,8 +48,15 @@ import { BudgetModule } from './modules/budget/budget.module';
     AuditModule,
     ClaimModule,
     BudgetModule,
+    ApprovalModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditInterceptor,
+    },
+  ],
 })
 export class AppModule {}

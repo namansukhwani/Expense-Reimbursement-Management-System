@@ -1,4 +1,4 @@
-# Payoneer Expense Reimbursement Management System
+# Expense Reimbursement Management System
 
 ## Overview
 This is a NestJS based Modular Monolith application for managing employee expense submissions, policy validation, approval workflows, and budget tracking.
@@ -31,7 +31,7 @@ This is a NestJS based Modular Monolith application for managing employee expens
 - [x] **Settings:** System-wide settings (e.g. Base Currency)
 - [x] **Expense:** Core expense tracking and receipt uploads
 - [x] **Claim:** Reimbursement claim state machine and bundling
-- [ ] **Approval:** Manager approval workflow and budget consumption
+- [x] **Approval:** Manager approval workflow and budget consumption
 - [x] **Audit:** Entity action tracking and claim status history
 - [x] **Budget:** Internal budget service
 ## Documentation

@@ -282,18 +282,18 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
 
 > Wire everything together, add audit interceptor globally, seed data, final validation.
 
-- [ ] **10.1** Apply `@Auditable()` decorator to all controller methods that create/update/delete entities (expense, claim, department, category, exchange-rate, settings)
-- [ ] **10.2** Register `AuditInterceptor` globally in `AppModule` (or per-controller)
-- [ ] **10.3** Register `HttpExceptionFilter` globally in `main.ts`
-- [ ] **10.4** Create `src/database/seeds/seed-data.ts` — seed script:
+- [x] **10.1** Apply `@Auditable()` decorator to all controller methods that create/update/delete entities (expense, claim, department, category, exchange-rate, settings)
+- [x] **10.2** Register `AuditInterceptor` globally in `AppModule` (or per-controller)
+- [x] **10.3** Register `HttpExceptionFilter` globally in `main.ts`
+- [x] **10.4** Create `src/database/seeds/seed-data.ts` — seed script:
   - 2 departments (Engineering, Marketing) with budgets
   - 5 categories (Travel, Meals, Office Supplies, Software, Equipment) with limits
   - 3 users (1 admin, 1 manager, 1 employee) with proper relationships
   - Exchange rates (USD→EUR, USD→INR, EUR→INR)
   - System setting: BASE_CURRENCY=USD
-- [ ] **10.5** Add `consumed_budget` field to department response DTOs
-- [ ] **10.6** Verify all endpoints return standard response envelope (`{ success, data, meta }`)
-- [ ] **10.7** Run full happy-path flow manually:
+- [x] **10.5** Add `consumed_budget` field to department response DTOs
+- [x] **10.6** Verify all endpoints return standard response envelope (`{ success, data, meta }`)
+- [x] **10.7** Run full happy-path flow manually:
   1. Login as employee
   2. Create expense (multi-currency) → verify conversion + policy flag
   3. Upload receipt
@@ -303,7 +303,7 @@ Build the MVP as a modular NestJS monolith, phase-by-phase following entity depe
   7. View pending claims
   8. Approve claim → verify budget consumed
   9. Verify audit log + status history
-- [ ] **10.8** Verify error paths: invalid state transitions, unauthorized approval, missing comment on reject, duplicate exchange rate pair
+- [x] **10.8** Verify error paths: invalid state transitions, unauthorized approval, missing comment on reject, duplicate exchange rate pair
 
 **✅ Validation:** Complete end-to-end flow works. All P0 features operational. Error responses follow envelope format. Audit trail complete.
 

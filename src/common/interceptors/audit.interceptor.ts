@@ -18,7 +18,10 @@ export class AuditInterceptor implements NestInterceptor {
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const entityType = this.reflector.get<string>(AUDITABLE_KEY, context.getHandler());
+    const entityType = this.reflector.getAllAndOverride<string>(AUDITABLE_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
     
     if (!entityType) {
       return next.handle();

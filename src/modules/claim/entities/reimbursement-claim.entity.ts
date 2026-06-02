@@ -4,6 +4,7 @@ import { UserEntity } from '../../auth/entities/user.entity';
 import { DepartmentEntity } from '../../department/entities/department.entity';
 import { ExpenseEntity } from '../../expense/entities/expense.entity';
 import { ClaimStatusHistoryEntity } from '../../audit/entities/claim-status-history.entity';
+import { ApprovalActionEntity } from '../../approval/entities/approval-action.entity';
 import { ClaimStatus } from '../../../common/enums/claim-status.enum';
 
 @Entity('reimbursement_claim')
@@ -50,6 +51,6 @@ export class ReimbursementClaimEntity extends BaseEntity {
   @OneToMany(() => ClaimStatusHistoryEntity, history => history.claim)
   statusHistory: ClaimStatusHistoryEntity[];
 
-  // @OneToMany(() => ApprovalActionEntity, action => action.claim)
-  // approvalActions: ApprovalActionEntity[]; // To be added in Phase 9
+  @OneToMany(() => ApprovalActionEntity, action => action.claim)
+  approvalActions: ApprovalActionEntity[];
 }

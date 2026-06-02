@@ -4,8 +4,10 @@ import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Auditable } from '../../common/decorators/auditable.decorator';
 
 @UseGuards(JwtAuthGuard)
+@Auditable('DEPARTMENT')
 @Controller('departments')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}

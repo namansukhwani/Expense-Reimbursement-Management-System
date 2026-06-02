@@ -6,8 +6,10 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { ClaimStatus } from '../../common/enums/claim-status.enum';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Auditable } from '../../common/decorators/auditable.decorator';
 
 @UseGuards(JwtAuthGuard)
+@Auditable('REIMBURSEMENT_CLAIM')
 @Controller('claims')
 export class ClaimController {
   constructor(private readonly claimService: ClaimService) {}

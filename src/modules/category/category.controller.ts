@@ -4,8 +4,10 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Auditable } from '../../common/decorators/auditable.decorator';
 
 @UseGuards(JwtAuthGuard)
+@Auditable('CATEGORY')
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}

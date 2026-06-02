@@ -10,8 +10,10 @@ import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Auditable } from '../../common/decorators/auditable.decorator';
 
 @UseGuards(JwtAuthGuard)
+@Auditable('EXPENSE')
 @Controller('expenses')
 export class ExpenseController {
   constructor(private readonly expenseService: ExpenseService) {}

@@ -3,8 +3,10 @@ import { CurrencyService } from './currency.service';
 import { CreateExchangeRateDto } from './dto/create-exchange-rate.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Auditable } from '../../common/decorators/auditable.decorator';
 
 @UseGuards(JwtAuthGuard)
+@Auditable('EXCHANGE_RATE')
 @Controller('exchange-rates')
 export class CurrencyController {
   constructor(private readonly currencyService: CurrencyService) {}

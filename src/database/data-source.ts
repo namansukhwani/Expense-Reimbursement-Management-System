@@ -9,6 +9,7 @@ import { ExpenseEntity } from '../modules/expense/entities/expense.entity';
 import { AuditLogEntity } from '../modules/audit/entities/audit-log.entity';
 import { ClaimStatusHistoryEntity } from '../modules/audit/entities/claim-status-history.entity';
 import { ReimbursementClaimEntity } from '../modules/claim/entities/reimbursement-claim.entity';
+import { ApprovalActionEntity } from '../modules/approval/entities/approval-action.entity';
 
 // Load .env variables
 config();
@@ -22,7 +23,7 @@ export default new DataSource({
   database: process.env.DB_DATABASE || 'expense_reimbursement',
   synchronize: false,
   logging: true,
-  entities: [UserEntity, DepartmentEntity, CategoryEntity, ExchangeRateEntity, SystemSettingEntity, ExpenseEntity, AuditLogEntity, ClaimStatusHistoryEntity, ReimbursementClaimEntity], // Add future entities here
+  entities: [UserEntity, DepartmentEntity, CategoryEntity, ExchangeRateEntity, SystemSettingEntity, ExpenseEntity, AuditLogEntity, ClaimStatusHistoryEntity, ReimbursementClaimEntity, ApprovalActionEntity], // Add future entities here
   migrations: ['src/database/migrations/*.ts'],
   migrationsTableName: 'migrations',
 });
