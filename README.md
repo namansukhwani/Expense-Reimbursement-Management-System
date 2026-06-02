@@ -30,7 +30,7 @@ This is a NestJS based Modular Monolith application for managing employee expens
 - [x] **Currency:** Static exchange rates
 - [x] **Settings:** System-wide settings (e.g. Base Currency)
 - [x] **Expense:** Core expense tracking and receipt uploads
-- [ ] **Claim:** Reimbursement claim state machine and bundling
+- [x] **Claim:** Reimbursement claim state machine and bundling
 - [ ] **Approval:** Manager approval workflow and budget consumption
 - [x] **Audit:** Entity action tracking and claim status history
 - [ ] **Budget:** Internal budget service

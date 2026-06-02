@@ -14,6 +14,7 @@ import { CurrencyModule } from './modules/currency/currency.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { ExpenseModule } from './modules/expense/expense.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { ClaimModule } from './modules/claim/claim.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AuditModule } from './modules/audit/audit.module';
     SettingsModule,
     ExpenseModule,
     AuditModule,
+    ClaimModule,
   ],
   controllers: [AppController],
   providers: [AppService],

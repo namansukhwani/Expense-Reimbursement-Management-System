@@ -1,4 +1,5 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { ReimbursementClaimEntity } from '../../claim/entities/reimbursement-claim.entity';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { CategoryEntity } from '../../category/entities/category.entity';
@@ -54,4 +55,8 @@ export class ExpenseEntity extends BaseEntity {
   @ManyToOne(() => CategoryEntity)
   @JoinColumn({ name: 'category_id' })
   category: CategoryEntity;
+
+  @ManyToOne(() => ReimbursementClaimEntity, { nullable: true })
+  @JoinColumn({ name: 'claim_id' })
+  claim: ReimbursementClaimEntity;
 }

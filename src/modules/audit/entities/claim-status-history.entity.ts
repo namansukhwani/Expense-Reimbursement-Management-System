@@ -1,4 +1,5 @@
 import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { ReimbursementClaimEntity } from '../../claim/entities/reimbursement-claim.entity';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { ClaimStatus } from '../../../common/enums/claim-status.enum';
@@ -9,10 +10,9 @@ export class ClaimStatusHistoryEntity extends BaseEntity {
   @Index()
   claimId: string;
 
-  // Relation will be added in Phase 7
-  // @ManyToOne(() => ReimbursementClaimEntity)
-  // @JoinColumn({ name: 'claim_id' })
-  // claim: ReimbursementClaimEntity;
+  @ManyToOne(() => ReimbursementClaimEntity)
+  @JoinColumn({ name: 'claim_id' })
+  claim: ReimbursementClaimEntity;
 
   @Column({ type: 'varchar', enum: ClaimStatus, name: 'from_status' })
   fromStatus: ClaimStatus;

@@ -19,7 +19,7 @@ This project utilizes the Antigravity-IDE agent ecosystem.
 - [x] Phase 4: Admin Configuration Modules (Department, Category, Currency, Settings)
 - [x] Phase 5: Expense Module (Core)
 - [x] Phase 6: Audit Module
-- [ ] Phase 7: Claim Module (Core)
+- [x] Phase 7: Claim Module (Core)
 - [ ] Phase 8: Budget Module (Internal Service)
 - [ ] Phase 9: Approval Module (Core)
 - [ ] Phase 10: Integration & Polish
