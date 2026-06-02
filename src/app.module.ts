@@ -7,6 +7,13 @@ import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import storageConfig from './config/storage.config';
+import { AuthModule } from './modules/auth/auth.module';
+import { DepartmentModule } from './modules/department/department.module';
+import { CategoryModule } from './modules/category/category.module';
+import { CurrencyModule } from './modules/currency/currency.module';
+import { SettingsModule } from './modules/settings/settings.module';
+import { ExpenseModule } from './modules/expense/expense.module';
+import { AuditModule } from './modules/audit/audit.module';
 
 @Module({
   imports: [
@@ -27,6 +34,13 @@ import storageConfig from './config/storage.config';
         synchronize: true, // Use false in production and use migrations
       }),
     }),
+    AuthModule,
+    DepartmentModule,
+    CategoryModule,
+    CurrencyModule,
+    SettingsModule,
+    ExpenseModule,
+    AuditModule,
   ],
   controllers: [AppController],
   providers: [AppService],
